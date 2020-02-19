@@ -3,12 +3,12 @@
 
 
 namespace Cipher {
-	static std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 	static inline size_t index(char ch)
 	{
 		//return alphabet.find(a);
-		return ch - 'A';
+		return ch - 'a';
 	}
 
 	namespace Ceasar {

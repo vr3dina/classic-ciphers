@@ -5,8 +5,8 @@
 namespace Cipher {
 	namespace  Playfair {
 
-		static std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,_";
-		static std::string table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ .,_";
+		static std::string alphabet = "abcdefghijklmnopqrstuvwxyz .,_";
+		static std::string table;
 		const int row_cnt = 5;
 		const int col_cnt = 6;
 
@@ -17,12 +17,12 @@ namespace Cipher {
 		
 		void init_table(const std::string& key)
 		{
-			assert(row_cnt * col_cnt == table.size());
 			table = key + alphabet;
 			for (size_t i = 0; i < key.size(); i++)
 			{
 				table.erase(std::remove(table.begin() + i + 1, table.end(), key[i]), table.end());
 			}
+			assert(row_cnt * col_cnt == table.size());
 		}
 
 		std::string encode(const std::string& key, const std::string& text)
@@ -90,23 +90,6 @@ namespace Cipher {
 				assert(text.size() % 2 == 0);
 				size_t fst = index(text[i]);
 				size_t snd = index(text[i + 1]);
-
-				//if (i + 1 == text.size())
-				//{
-				//	snd = table.size() - 1;
-				//	res.resize(res.size() + 1);
-				//}
-				//else if (text[i] == text[i + 1])
-				//{
-				//	snd = table.size() - 1;
-				//	res.resize(res.size() + 1);
-				//	skip = true;
-				//}
-				//else
-				//{
-				//	snd = index(text[i + 1]);
-				//}
-
 
 				int fst_row = fst / col_cnt;
 				int snd_row = snd / col_cnt;
