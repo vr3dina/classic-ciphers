@@ -32,7 +32,7 @@ void test(unsigned int size = 1'000'000)
 	ostringstream out;
 	generate_text(size, out);
 
-	TEST(3, out.str(), Ceasar);
+	TEST(27, out.str(), Ceasar);
 	TEST(key, out.str(), Vigenere);
 	TEST(key, out.str(), Playfair);
 }
@@ -40,11 +40,11 @@ void test(unsigned int size = 1'000'000)
 void usage()
 {
 	cout << "Usage: \n";
-	cout << "-c\tCeasar\n";
+	cout << "-c\tCeasar [default]\n";
 	cout << "-p\tPlayfair\n";
 	cout << "-v\tVigenere\n";
-	cout << "-e\tencode\n";
-	cout << "-d\tdecode\n";
+	cout << "-d\tdecode [optional]\n";
+	cout << "-k\tprint key [optional]\n";
 }
 
 int main(int argc, char* argv[])
@@ -56,16 +56,17 @@ int main(int argc, char* argv[])
 	}
 
 	bool encode = true;
+	bool print_key = false;
 	enum { CEASAR, VIGENERE, PLAYFAIR } cipher_type = CEASAR;
 	for (size_t i = 1; i < argc && argv[i][0] == '-'; i++)
 	{
 		switch (argv[i][1])
 		{
-		case 'e': encode = true; break;
 		case 'd': encode = false; break;
 		case 'c': cipher_type = CEASAR; break;
 		case 'p': cipher_type = PLAYFAIR; break;
 		case 'v': cipher_type = VIGENERE; break;
+		case 'k': print_key = true; break;
 		case 't': test(); return 0;
 		default:
 			usage();
@@ -73,14 +74,11 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	system(" ");
 	string key, text;
-	cout << "Enter key: ";
 	cin >> key;
-	cout << "\u001B[A" << "Enter key: " << key << endl;
-	cout << "Enter text: ";
 	cin >> text;
-	cout << "\u001B[A" << "Enter text: " << text << endl << "(d)encrypted text: ";
+	if (print_key)
+		cout << key << endl;
 	switch (cipher_type)
 	{
 	case CEASAR:

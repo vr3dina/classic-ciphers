@@ -3,6 +3,7 @@
 
 std::string Cipher::Ceasar::encode(unsigned int shift, const std::string& text)
 {
+	shift %= alphabet.size();
 	std::string ans = text;
 	for (size_t i = 0; i < ans.size(); i++)
 	{
@@ -13,6 +14,7 @@ std::string Cipher::Ceasar::encode(unsigned int shift, const std::string& text)
 
 std::string Cipher::Ceasar::decode(unsigned int shift, const std::string& text)
 {
+	shift %= alphabet.size();
 	size_t n = alphabet.size();
 	std::string ans = text;
 	for (size_t i = 0; i < ans.size(); i++)
