@@ -7,7 +7,6 @@ namespace Cipher {
 
 	static inline size_t index(char ch)
 	{
-		//return alphabet.find(a);
 		return ch - 'a';
 	}
 

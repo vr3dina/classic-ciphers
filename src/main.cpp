@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <time.h>
+#include <vector>
 #include "Ciphers.h"
 
 using namespace std;
@@ -17,29 +18,72 @@ using namespace Cipher;
 } \
 
 
-void generate_text(unsigned int size, ostream& out)
+string generate_text(unsigned int size)
 {
 	srand(time(NULL));
 	string text(size, ' ');
 	for (int i = 0; i < size; i++)
 		text[i] = (rand() % 26) + 'a';
-	out << text;
+	return text;
 }
 
-void test(unsigned int size = 1'000'000)
+void test(unsigned int size = 10'000'000)
 {
-	string key = "playfair";
-	ostringstream out;
-	generate_text(size, out);
+#ifdef _DEBUG
+	size = 10;
+#endif // _DEBUG
 
-	TEST(27, out.str(), Ceasar);
-	TEST(key, out.str(), Vigenere);
-	TEST(key, out.str(), Playfair);
+	string key = "playfair";
+	string text = generate_text(size);
+
+	TEST(27, text, Ceasar);
+	TEST(key, text, Vigenere);
+	TEST(key, text, Playfair);
+}
+
+vector<double> calc_probabilities(const string& text)
+{
+	vector<double> probabilities(128);
+	for (char ch : text)
+		probabilities[ch]++;
+	for (double& p : probabilities)
+		p /= text.size();
+	return probabilities;
+}
+
+double calc_entropy(const string& text)
+{
+	vector<double> probabilities = calc_probabilities(text);
+	double H = 0;
+	for (double p : probabilities)
+	{
+		if (p != 0)
+		{
+			H += p * log2(p);
+		}
+	}
+	return -H;
+}
+
+void print_entropy()
+{
+	int size;
+	cout << "Enter text size: ";
+	cin >> size;
+
+	string text = generate_text(size);
+	string key = "playfair";
+
+	cout << "Plain text\t" << calc_entropy(text) << endl;
+	cout << "Ceasar text\t" << calc_entropy(Ceasar::encode(3, text)) << endl;
+	cout << "Vigenere text\t" << calc_entropy(Vigenere::encode(key, text)) << endl;
+	cout << "Playfair text\t" << calc_entropy(Playfair::encode(key, text)) << endl;
 }
 
 void usage()
 {
 	cout << "Usage: \n";
+	cout << "-e\tprint entropy\n";
 	cout << "-c\tCeasar [default]\n";
 	cout << "-p\tPlayfair\n";
 	cout << "-v\tVigenere\n";
@@ -62,6 +106,7 @@ int main(int argc, char* argv[])
 	{
 		switch (argv[i][1])
 		{
+		case 'e': print_entropy(); return 0;
 		case 'd': encode = false; break;
 		case 'c': cipher_type = CEASAR; break;
 		case 'p': cipher_type = PLAYFAIR; break;

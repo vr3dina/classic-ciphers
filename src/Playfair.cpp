@@ -5,7 +5,8 @@
 namespace Cipher {
 	namespace  Playfair {
 
-		static std::string alphabet = "abcdefghijklmnopqrstuvwxyz .,_";
+		static char reserved_ch = '~';
+		static std::string alphabet = "abcdefghijklmnopqrstuvwxyz.,_";
 		static std::string table;
 		const int row_cnt = 5;
 		const int col_cnt = 6;
@@ -17,7 +18,7 @@ namespace Cipher {
 		
 		void init_table(const std::string& key)
 		{
-			table = key + alphabet;
+			table = key + alphabet + reserved_ch;
 			for (size_t i = 0; i < key.size(); i++)
 			{
 				table.erase(std::remove(table.begin() + i + 1, table.end(), key[i]), table.end());
@@ -112,7 +113,7 @@ namespace Cipher {
 					res[res_i + 1] = table[snd_row * col_cnt + fst_col];
 				}
 			}
-			res.erase(std::remove(res.begin(), res.end(), '_'), res.end());
+			res.erase(std::remove(res.begin(), res.end(), reserved_ch), res.end());
 			return res;
 		}
 	}
